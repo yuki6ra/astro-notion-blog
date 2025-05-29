@@ -24,6 +24,7 @@ import PostBody from '../../components/PostBody.astro'
 import PostRelativeLink from '../../components/PostRelativeLink.astro'
 import BlogPostsLink from '../../components/BlogPostsLink.astro'
 import BlogTagsLink from '../../components/BlogTagsLink.astro'
+import Upvote from '../../components/Upvote.astro'
 import styles from '../../styles/blog.module.css'
 
 export async function getStaticPaths() {
@@ -62,7 +63,11 @@ const fileAtacchedBlocks = extractTargetBlocks('image', blocks)
 await Promise.all(
   fileAtacchedBlocks
     .map(async (block) => {
-      const expiryTime = (block.Image || block.File).File.ExpiryTime
+      const imageOrFile = block.Image || block.File
+      if (!imageOrFile || !imageOrFile.File || !imageOrFile.File.ExpiryTime) {
+        return Promise.resolve(block)
+      }
+      const expiryTime = imageOrFile.File.ExpiryTime
       if (Date.parse(expiryTime) > Date.now()) {
         return Promise.resolve(block)
       }
@@ -72,7 +77,11 @@ await Promise.all(
       promise.then((block) => {
         let url!: URL
         try {
-          url = new URL((block.Image || block.File).File.Url)
+          const fileUrl = (block.Image || block.File)?.File?.Url;
+          if (!fileUrl) {
+            throw new Error("File URL is undefined");
+          }
+          url = new URL(fileUrl)
         } catch {
           console.log('Invalid file URL: ', (block.Image || block.File)?.File?.Url)
           return Promise.reject()
@@ -88,8 +97,8 @@ const prevPost = allPosts[currentPostIndex + 1]
 const nextPost = allPosts[currentPostIndex - 1]
 
 let ogImage = ''
-if (post.FeaturedImage && post.FeaturedImage.Url) {
-  ogImage = new URL(filePath(new URL(post.FeaturedImage.Url)), Astro.site)
+if (post.FeaturedImage?.Url) {
+  ogImage = new URL(filePath(new URL(post.FeaturedImage.Url)), Astro.site).toString()
 }
 ---
 
@@ -102,11 +111,11 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
   <div slot="main" class={styles.main}>
     <div class={styles.post}>
       <PostDate post={post} />
-      <PostTags post={post} />
+      <PostTags post={post} enableLink={false} />
       <PostTitle post={post} enableLink={false} />
       <PostBody blocks={blocks} />
-      <PostTags post={post} />
-
+      <PostTags post={post} enableLink={false} />
+      <Upvote slug={post.Slug} />
       <footer>
         <PostRelativeLink prevPost={prevPost} nextPost={nextPost} />
       </footer>

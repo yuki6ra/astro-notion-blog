@@ -27,17 +27,23 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
 ])
 ---
 
-<Layout>
+<Layout title="" description="" path="/" ogImage="">
   <div slot="main" class={styles.main}>
     {
       posts.length === 0 ? (
         <NoContents contents={posts} />
       ) : (
         posts.map((post) => (
-          <div class={styles.post} key={post.Slug}>
+          <div class={styles.post}>
             <PostDate post={post} />
-            <PostTags post={post} />
-            <PostTitle post={post} />
+            <PostTags post={post} enableLink />
+            <PostTitle post={post} enableLink />
+            <p>
+              {post.LastUpdated}
+            </p>
+            <p>
+              {post.Upvote}
+            </p>
             <PostFeaturedImage post={post} />
             <PostExcerpt post={post} />
             <ReadMoreLink post={post} />
@@ -47,7 +53,7 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
     }
 
     <footer>
-      <Pagination currentPage={1} numberOfPages={numberOfPages} />
+      <Pagination tag="pagination" currentPage={1} numberOfPages={numberOfPages} />
     </footer>
   </div>
 
