@@ -54,3 +54,17 @@ export interface PropertyValueSortObject {
   property: string
   direction: string
 }
+
+// Upvoteを更新するリクエストパラメータ
+export interface UpdatePage {
+  page_id: string
+  properties: PageProperties
+}
+
+interface PageProperties {
+  [key: string]: PageProperty
+}
+
+interface PageProperty {
+  number?: number
+}

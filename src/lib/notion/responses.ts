@@ -275,6 +275,10 @@ interface PageProperty {
   last_edited_by?: UserObject
 }
 
+// Upvoteのレスポンス定義
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface UpdatePageResponse extends PageObject {}
+
 interface SelectProperty {
   id: string
   name: string

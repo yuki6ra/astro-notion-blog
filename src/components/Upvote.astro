@@ -1,0 +1,124 @@
+---
+// Upvote.astro - いいねボタンコンポーネント
+interface Props {
+	slug: string; // 記事のスラッグ
+}
+
+const { slug } = Astro.props;
+---
+
+<div class="upvote-container">
+	<button id="upvote-button" class="upvote-button" data-slug={slug}>
+		<span class="upvote-icon">👍</span>
+		<span id="upvote-count">読み込み中...</span>
+	</button>
+</div>
+
+<script>
+  // いいねボタンの要素を取得
+  document.addEventListener('DOMContentLoaded', async () => {
+    const upvoteButton = document.getElementById('upvote-button') as HTMLButtonElement;
+    const upvoteCount = document.getElementById('upvote-count');
+
+    // いいね数を取得する関数
+    async function fetchUpvoteCount(slug: string) {
+      try {
+        const response = await fetch(`/api/upvote?slug=${slug}`);
+				if (!response.ok) {
+          throw new Error(`APIエラー: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.upvotes;
+      } catch (error) {
+        console.error('いいね数の取得に失敗しました:', error);
+        return 0;
+      }
+    }
+
+    // いいね数を増やす関数
+    async function incrementUpvote(slug: string) {
+      try {
+        const response = await fetch(`/api/upvote?slug=${slug}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+				if (!response.ok) {
+          throw new Error(`APIエラー: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.upvotes;
+      } catch (error) {
+        console.error('いいねの更新に失敗しました:', error);
+        return null;
+      }
+    }
+
+    // 初期表示時にいいね数を取得して表示
+    if (upvoteButton && upvoteCount) {
+      const slug = upvoteButton.dataset.slug;
+      if (slug) {
+        try {
+          const count = await fetchUpvoteCount(slug);
+          upvoteCount.textContent = count !== undefined && count !== null ? String(count) : '0';
+        } catch (err) {
+          console.error('いいね数の初期化に失敗しました:', err);
+          upvoteCount.textContent = '0';
+        }
+      }
+
+      upvoteButton.addEventListener('click', async () => {
+        const slug = upvoteButton.dataset.slug;
+        if (!slug) return;
+
+        // ボタンを一時的に無効化
+        upvoteButton.disabled = true;
+
+        // いいね数を増やす
+        const newCount = await incrementUpvote(slug);
+
+        // 新しいいいね数を表示
+        if (newCount !== null && upvoteCount) {
+          upvoteCount.textContent = String(newCount);
+        }
+
+        // ボタンを再度有効化
+        upvoteButton.disabled = false;
+      });
+    }
+  });
+</script>
+
+<style>
+	.upvote-container {
+		display: flex;
+		justify-content: center;
+		margin: 1rem 0;
+	}
+
+	.upvote-button {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		border: 1px solid #ddd;
+		border-radius: 2rem;
+		background-color: white;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.upvote-button:hover {
+		background-color: #f5f5f5;
+		transform: translateY(-2px);
+	}
+
+	.upvote-button:active {
+		transform: translateY(0);
+	}
+
+	.upvote-icon {
+		font-size: 1.2rem;
+	}
+</style></style>

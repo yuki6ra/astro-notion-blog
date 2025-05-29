@@ -55,6 +55,7 @@ import type {
 } from '../interfaces'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { Client, APIResponseError } from '@notionhq/client'
+import type Upvote from '../../components/Upvote.astro'
 
 const client = new Client({
   auth: NOTION_API_SECRET,
@@ -329,6 +330,30 @@ export async function getAllBlocksByBlockId(blockId: string): Promise<Block[]> {
   }
 
   return allBlocks
+}
+
+// upvoteを更新するメソッド
+export async function incrementLikes(post: Post): Promise<Post | null> {
+  let result: responses.PageObject
+
+  const params: requestParams.UpdatePage = {
+    page_id: post.PageId,
+    properties: {
+      Upvote: {
+        number: (post.Upvote || 0) + 1,
+      },
+    },
+  }
+
+  result = (await client.pages.update(
+    params as any // eslint-disable-line @typescript-eslint/no-explicit-any
+  )) as responses.UpdatePageResponse
+
+  if (!result) {
+    return null
+  }
+
+  return _buildPost(result)
 }
 
 export async function getBlock(blockId: string): Promise<Block> {
@@ -982,6 +1007,7 @@ function _buildPost(pageObject: responses.PageObject): Post {
       ? prop.Slug.rich_text.map((richText) => richText.plain_text).join('')
       : '',
     Date: prop.Date.date ? prop.Date.date.start : '',
+    LastUpdated: prop.LastUpdated.date ? prop.LastUpdated.date.start : '',
     Tags: prop.Tags.multi_select ? prop.Tags.multi_select : [],
     Excerpt:
       prop.Excerpt.rich_text && prop.Excerpt.rich_text.length > 0
@@ -989,6 +1015,7 @@ function _buildPost(pageObject: responses.PageObject): Post {
         : '',
     FeaturedImage: featuredImage,
     Rank: prop.Rank.number ? prop.Rank.number : 0,
+    Upvote: prop.upvote.number ? prop.upvote.number : 0,
   }
 
   return post
