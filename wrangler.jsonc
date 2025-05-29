@@ -1,0 +1,11 @@
+{
+  "name": "powwarm",
+  "compatibility_date": "2025-05-28",
+  "pages_build_output_dir": "./dist",
+  "kv_namespaces": [
+    {
+      "binding": "powwarm_upvote",
+      "id": "ca1df5bbf727450eb9f4e2e3aadecd1e"
+    }
+  ]
+}
