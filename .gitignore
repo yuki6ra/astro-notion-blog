@@ -32,3 +32,5 @@ public/notion/*
 # Cloudflare Wrangler
 .wrangler/*
 .dev.vars
+
+todo.md
