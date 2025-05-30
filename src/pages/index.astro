@@ -2,8 +2,8 @@
 import { NUMBER_OF_POSTS_PER_PAGE } from '../server-constants.ts'
 import {
   getPosts,
-  getRankedPosts,
-  getAllTags,
+  // getRankedPosts,
+  // getAllTags,
   getNumberOfPages,
 } from '../lib/notion/client.ts'
 import Layout from '../layouts/Layout.astro'
@@ -11,18 +11,20 @@ import NoContents from '../components/NoContents.astro'
 import PostDate from '../components/PostDate.astro'
 import PostTags from '../components/PostTags.astro'
 import PostTitle from '../components/PostTitle.astro'
-import PostFeaturedImage from '../components/PostFeaturedImage.astro'
+// import PostFeaturedImage from '../components/PostFeaturedImage.astro'
 import PostExcerpt from '../components/PostExcerpt.astro'
 import ReadMoreLink from '../components/ReadMoreLink.astro'
 import Pagination from '../components/Pagination.astro'
-import BlogPostsLink from '../components/BlogPostsLink.astro'
-import BlogTagsLink from '../components/BlogTagsLink.astro'
+// import BlogPostsLink from '../components/BlogPostsLink.astro'
+// import BlogTagsLink from '../components/BlogTagsLink.astro'
+import SearchButton from '../components/SearchButton.astro'
+import PostDates from '../components/PostDates.astro'
 import styles from '../styles/blog.module.css'
 
-const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
+const [posts, numberOfPages] = await Promise.all([
   getPosts(NUMBER_OF_POSTS_PER_PAGE),
-  getRankedPosts(),
-  getAllTags(),
+  // getRankedPosts(),
+  // getAllTags(),
   getNumberOfPages(),
 ])
 ---
@@ -33,22 +35,22 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
       posts.length === 0 ? (
         <NoContents contents={posts} />
       ) : (
-        posts.map((post) => (
-          <div class={styles.post}>
-            <PostDate post={post} />
-            <PostTags post={post} enableLink />
-            <PostTitle post={post} enableLink />
-            <p>
-              {post.LastUpdated}
-            </p>
-            <p>
-              {post.Upvote}
-            </p>
-            <PostFeaturedImage post={post} />
-            <PostExcerpt post={post} />
-            <ReadMoreLink post={post} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <SearchButton />
           </div>
-        ))
+          {posts.map((post) => (
+            <ReadMoreLink post={post}>
+              <PostDates post={post} />
+              {/* <PostDates post={post} /> */}
+              <PostTitle post={post} enableLink={true} />
+              {/* <PostFeaturedImage post={post} /> */}
+              <PostExcerpt post={post} />
+              <PostTags post={post} enableLink={true} />
+              {/* <ReadMoreLink post={post} /> */}
+            </ReadMoreLink>
+          ))}
+        </div>
       )
     }
 
@@ -57,8 +59,16 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
     </footer>
   </div>
 
-  <div slot="aside" class={styles.aside}>
+  <!-- <div slot="aside" class={styles.aside}>
     <BlogPostsLink heading="Recommended" posts={rankedPosts} />
     <BlogTagsLink heading="Categories" tags={tags} />
-  </div>
+  </div> -->
 </Layout>
+
+<style>
+  footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+</style>
