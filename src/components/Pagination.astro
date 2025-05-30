@@ -9,6 +9,9 @@ export interface Props {
 
 const { currentPage, numberOfPages, tag = '' } = Astro.props
 
+// ページが複数ある場合のみページネーションを表示
+const showPagination = numberOfPages > 1
+
 const isFirstPage = currentPage === 1
 const isLastPage = currentPage === numberOfPages
 
@@ -16,25 +19,41 @@ const startPage = currentPage - 2 < 1 ? 1 : currentPage - 2
 const endPage =
   currentPage + 2 > numberOfPages ? numberOfPages : currentPage + 2
 
-let pages = []
+const pages = []
 for (let i = startPage; i <= endPage; i++) {
   pages.push(i)
 }
 ---
 
-<div class="pagination">
-  <a href={getPageLink(1, tag)} class={isFirstPage && 'inactive'}>&lt;&lt;</a>
-  {
-    pages.map((p: number) => (
-      <a href={getPageLink(p, tag)} class={p === currentPage && 'inactive'}>
-        {p}
-      </a>
+{showPagination && (
+  <div class="pagination">
+    <a
+      href={getPageLink(1)}
+      class={isFirstPage ? 'inactive' : undefined}
+      aria-disabled={!!isFirstPage}
+    >
+      &lt;&lt;
+    </a>
+    {
+      pages.map((p: number) => (
+        <a
+          href={getPageLink(p)}
+          class={p === currentPage ? 'inactive' : undefined}
+          aria-disabled={p === currentPage}
+        >
+          {p}
+        </a>
     ))
-  }
-  <a href={getPageLink(numberOfPages, tag)} class={isLastPage && 'inactive'}
-    >&gt;&gt;</a
-  >
-</div>
+    }
+    <a
+      href={getPageLink(numberOfPages)}
+      class={isLastPage ? 'inactive' : undefined}
+      aria-disabled={!!isLastPage}
+    >
+      &gt;&gt;
+    </a>
+  </div>
+)}
 
 <style>
   .pagination {
@@ -65,5 +84,7 @@ for (let i = startPage; i <= endPage; i++) {
   .pagination a.inactive {
     color: #999;
     text-decoration: none;
+    pointer-events: none;
+    cursor: default;
   }
 </style>

@@ -137,7 +137,7 @@ export const getTagLink = (tag: string) => {
   return pathJoin(BASE_PATH, `/posts/tag/${encodeURIComponent(tag)}`)
 }
 
-export const getPageLink = (page: number, tag: string) => {
+export const getPageLink = (page: number, tag?: string) => {
   if (page === 1) {
     return tag ? getTagLink(tag) : pathJoin(BASE_PATH, '/')
   }
