@@ -1,0 +1,64 @@
+---
+import type { Block } from '../lib/interfaces.js'
+import TableOfContents from './notion-blocks/TableOfContents.astro';
+
+export interface Props {
+  heading: string
+  blocks: Block[]
+  isAside: boolean
+}
+const { blocks, isAside } = Astro.props
+
+// Notion側にTableOfContentsが存在しない場合でも作れるように仮想のアイテムを作成
+const dummyBlock: Block = {
+  Id: "",
+  Type: "",
+  HasChildren: false,
+  TableOfContents: {
+    Color: "gray"
+  }
+}
+
+const headings = blocks.filter((b: Block) =>
+    ['heading_1', 'heading_2', 'heading_3'].includes(b.Type)
+  )
+---
+
+<div class={`post-headline ${isAside ? 'aside' : 'main'}`}>
+  <strong>目次</strong>
+  <TableOfContents block={dummyBlock} headings={headings}/>
+</div>
+
+<style>
+  .post-headline {
+    background-color: #f6f6f6;
+    border-radius: 0.5rem;
+    padding: 1rem 1.5rem;
+    z-index: 10;
+    width: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    /* モバイル表示では、サイドバー表示の目次を非表示 */
+    .post-headline.aside {
+      display: none;
+    }
+    /* メインコンテンツ用スタイル */
+    .post-headline.main {
+      display: block;
+      position: relative;
+      margin: 1rem auto;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    /* デスクトップ表示では、メインコンテンツ内の目次を非表示 */
+    .post-headline.main {
+      display: none;
+    }
+    /* サイドバー用スタイル */
+    .post-headline.aside {
+      display: block;
+    }
+  }
+</style>
