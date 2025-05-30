@@ -1,5 +1,5 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
+import type * as interfaces from '../../lib/interfaces.ts'
 import {
   getPosts,
   getAllPosts,
@@ -17,15 +17,16 @@ import {
   extractTargetBlocks,
 } from '../../lib/blog-helpers.ts'
 import Layout from '../../layouts/Layout.astro'
-import PostDate from '../../components/PostDate.astro'
 import PostTags from '../../components/PostTags.astro'
+import PostFeaturedImage from '../../components/PostFeaturedImage.astro'
 import PostTitle from '../../components/PostTitle.astro'
 import PostBody from '../../components/PostBody.astro'
 import PostRelativeLink from '../../components/PostRelativeLink.astro'
 import BlogPostsLink from '../../components/BlogPostsLink.astro'
 import BlogTagsLink from '../../components/BlogTagsLink.astro'
-import Upvote from '../../components/Upvote.astro'
+import BlogPostHeadline from '../../components/BlogPostHeadline.astro'
 import styles from '../../styles/blog.module.css'
+import PostDates from '../../components/PostDates.astro'
 
 export async function getStaticPaths() {
   const posts = await getAllPosts()
@@ -56,7 +57,7 @@ const fileAtacchedBlocks = extractTargetBlocks('image', blocks)
       return false
     }
     const imageOrFile = block.Image || block.File
-    return imageOrFile && imageOrFile.File && imageOrFile.File.Url
+    return imageOrFile?.File?.Url
   })
 
 // Download files
@@ -81,10 +82,10 @@ await Promise.all(
           if (!fileUrl) {
             throw new Error("File URL is undefined");
           }
-          url = new URL(fileUrl)
+          url = new URL(fileUrl);
         } catch {
-          console.log('Invalid file URL: ', (block.Image || block.File)?.File?.Url)
-          return Promise.reject()
+          console.log('Invalid file URL: ', (block.Image || block.File)?.File?.Url);
+          return Promise.reject();
         }
         return Promise.resolve(url)
       })
@@ -109,17 +110,24 @@ if (post.FeaturedImage?.Url) {
   ogImage={ogImage}
 >
   <div slot="main" class={styles.main}>
+    <PostFeaturedImage post={post} />
     <div class={styles.post}>
-      <PostDate post={post} />
-      <PostTags post={post} enableLink={false} />
       <PostTitle post={post} enableLink={false} />
+      <PostDates post={post} />
+      <PostTags post={post} enableLink={true} />
+      <BlogPostHeadline heading="目次" blocks={blocks} isAside={false} />
+      <br />
       <PostBody blocks={blocks} />
-      <PostTags post={post} enableLink={false} />
-      <Upvote slug={post.Slug} />
+      <PostTags post={post} enableLink={true} />
+
       <footer>
         <PostRelativeLink prevPost={prevPost} nextPost={nextPost} />
       </footer>
     </div>
+  </div>
+
+  <div slot="right-aside" class="right-aside">
+    <BlogPostHeadline heading="目次" blocks={blocks} isAside={true} />
   </div>
 
   <div slot="aside" class="aside">

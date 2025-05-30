@@ -5,7 +5,6 @@ import { getNavLink, getStaticFilePath } from '../lib/blog-helpers.ts'
 import '../styles/syntax-coloring.css'
 import GoogleAnalytics from '../components/GoogleAnalytics.astro'
 import SearchModal from '../components/SearchModal.astro'
-// import SearchButton from '../components/SearchButton.astro'
 
 export interface Props {
   title: string
@@ -29,19 +28,6 @@ const topIcon = new URL(
   getStaticFilePath('/top.svg'),
   Astro.site
 )
-
-// let coverImageURL: string
-// if (database.Cover) {
-//   if (database.Cover.Type === 'external') {
-//     coverImageURL = database.Cover.Url
-//   } else if (database.Cover.Type === 'file') {
-//     try {
-//       coverImageURL = filePath(new URL(database.Cover.Url))
-//     } catch {
-//       console.log('Invalid DB cover image URL: ', database.Cover?.Url)
-//     }
-//   }
-// }
 
 // let customIconURL: string | undefined = undefined;
 // if (database.Icon && database.Icon.Type === 'file') {
@@ -82,9 +68,10 @@ const topIcon = new URL(
   </head>
   <body>
     <GoogleAnalytics trackingId={PUBLIC_GA_TRACKING_ID} />
-    <header>
-              <h1>
-                <a href={getNavLink('/')}>
+    <div class="container">
+      <header>
+        <h1>
+          <a href={getNavLink('/')}>
             <!-- {
               database.Icon && database.Icon.Type === 'emoji' ? (
                 <>
@@ -115,27 +102,36 @@ const topIcon = new URL(
               )
             } -->
           </a>
-              </h1>
-              <div class="description">
-                {database.Description}
-              </div>
-            </header>
+        </h1>
+        <div class="description">
+          {database.Description}
+        </div>
+      </header>
 
       <!-- <aside>
-        <slot name="right-aside" />
+        <SearchButton />
+        <slot name="aside" />
       </aside> -->
+      <aside>
+        <slot name="right-aside" />
+      </aside>
 
-    <div class="container">
       <div>
         <main>
+          <div class="content">
             <slot name="main" />
+
 
             <footer>
               <div>
                 <span>Powered by&nbsp;</span>
-                <a href="https://github.com/otoyo/astro-notion-blog"
-                  >astro-notion-blog</a
+                <a
+                  href="https://github.com/otoyo/astro-notion-blog"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
+                  astro-notion-blog
+                </a>
               </div>
               <div>
                 <span>© 2025 powwa</span>
@@ -143,11 +139,6 @@ const topIcon = new URL(
             </footer>
           </div>
         </main>
-
-        <!-- <aside>
-          <SearchButton />
-          <slot name="aside" />
-        </aside> -->
       </div>
     </div>
 
@@ -178,9 +169,6 @@ const topIcon = new URL(
   }
 
   main {
-    /* flex: 1;
-    order: 2;
-    justify-content: space-between; */
     width: 100%;
   }
   @media (max-width: 640px) {
@@ -194,6 +182,10 @@ const topIcon = new URL(
     width: 300px;
     padding: 20px 20px;
     background-color: #f4f4f4; */
+    /* position: fixed;
+    top: 50%;
+    left:80%;
+	  margin-left:100px; */
     transition-duration: .3s;
     position: fixed;
     top: 50%;
@@ -203,12 +195,6 @@ const topIcon = new URL(
     z-index: 1;
     display: block;
   }
-  /* @media (max-width: 640px) {
-    aside {
-      order: 2;
-      width: 100%;
-    }
-  } */
 
   div.cover {
   }
@@ -230,42 +216,41 @@ const topIcon = new URL(
     }
   }
 
-  main header {
-    padding: 20px 0 20px;
+  .container header {
+    padding: 40px 0 30px;
     text-align: center;
   }
-  main header h1 {
+  .container header h1 {
     font-weight: 700;
     color: #333;
   }
-  main header h1 a {
-    /* display: block; */
+  .container header h1 a {
     color: inherit;
   }
-  main header h1 a:hover {
+  .container header h1 a:hover {
     color: inherit;
   }
-  main header h1 a span,
-  main header h1 a img {
+  .container header h1 a span,
+  .container header h1 a img {
     display: inline-block;
     font-size: 1.1em;
   }
-  main header h1 a span {
+  .container header h1 a span {
     margin-right: 0.3em;
     margin-left: -0.1rem;
   }
-  main header h1 a img {
+  .container header h1 a img {
     width: 1.2em;
     height: 1.2em;
     /* margin-right: 0.2em;
     margin-left: -0.3rem; */
     vertical-align: sub;
   }
-  main header h1 a img.custom-icon {
+  .container header h1 a img.custom-icon {
     border-radius: var(--radius);
   }
 
-  main header div.description {
+  .container header div.description {
     padding: 0.3rem 0 0.6rem;
     font-size: 0.95rem;
   }
