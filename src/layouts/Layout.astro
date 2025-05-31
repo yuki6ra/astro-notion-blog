@@ -5,6 +5,7 @@ import { getNavLink, getStaticFilePath } from '../lib/blog-helpers.ts'
 import '../styles/syntax-coloring.css'
 import GoogleAnalytics from '../components/GoogleAnalytics.astro'
 import SearchModal from '../components/SearchModal.astro'
+import SearchButton from '../components/SearchButton.astro'
 
 export interface Props {
   title: string
@@ -105,6 +106,9 @@ const topIcon = new URL(
         </h1>
         <div class="description">
           {database.Description}
+        </div>
+        <div style="position: absolute; right: 4rem; top: 1rem;">
+          <SearchButton />
         </div>
       </header>
 
