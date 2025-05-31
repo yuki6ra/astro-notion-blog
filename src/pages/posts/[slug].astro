@@ -27,6 +27,7 @@ import BlogTagsLink from '../../components/BlogTagsLink.astro'
 import BlogPostHeadline from '../../components/BlogPostHeadline.astro'
 import styles from '../../styles/blog.module.css'
 import PostDates from '../../components/PostDates.astro'
+import Upvote from '../../components/Upvote.astro'
 
 export async function getStaticPaths() {
   const posts = await getAllPosts()
@@ -118,6 +119,7 @@ if (post.FeaturedImage?.Url) {
       <BlogPostHeadline heading="目次" blocks={blocks} isAside={false} />
       <br />
       <PostBody blocks={blocks} />
+      <Upvote slug={slug} />
 
       <footer>
         <PostRelativeLink prevPost={prevPost} nextPost={nextPost} />
