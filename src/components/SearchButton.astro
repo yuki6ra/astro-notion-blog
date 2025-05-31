@@ -2,12 +2,18 @@
 import { Icon } from 'astro-icon/components';
 ---
 
-<button class="search-button open-search-modal" type="button"><Icon name="octicon:search-24" /><span>Search</span></button>
+<button
+  class="search-button open-search-modal"
+  type="button"
+  >
+  <Icon name="octicon:search-24" />
+  <!-- <span>Search</span> -->
+</button>
 
 <style>
   .search-button {
-    display: flex;
-    width: 100%;
+    /* display: flex; */
+    /* width: 100%; */
     background-color: transparent;
     margin-bottom: 0.5rem;
     border: none;
@@ -16,6 +22,7 @@ import { Icon } from 'astro-icon/components';
     color: #777;
     font-size: 0.95rem;
     font-weight: bold;
+    text-align: center;
   }
   .search-button:hover {
     cursor: pointer;

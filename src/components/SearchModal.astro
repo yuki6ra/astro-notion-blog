@@ -219,7 +219,10 @@
       const ul = document.querySelector('.search-result ul')
       ul.innerHTML = ''
 
-      results.forEach((item) => {
+      // 最大6件に制限する
+      const limitedResults = results.slice(0, 6)
+
+      limitedResults.forEach((item) => {
         const li = document.createElement('li')
         const a = document.createElement('a')
         const title = document.createElement('div')
