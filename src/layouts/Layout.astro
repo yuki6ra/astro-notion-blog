@@ -55,11 +55,11 @@ const topIcon = new URL(
     <meta property="og:title" content={siteTitle} />
     <meta property="og:description" content={siteDescription} />
     <meta property="og:site_name" content={database.Title} />
-    <meta property="og:image" content={ogImage || siteOGImage} />
+    <meta property="og:image" content={ogImage || "/default-og-image.png"} />
     <meta name="twitter:title" content={siteTitle} />
     <meta name="twitter:description" content={siteDescription} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content={ogImage || siteOGImage} />
+    <meta name="twitter:image" content={ogImage || "/default-og-image.png"} />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
@@ -92,7 +92,7 @@ const topIcon = new URL(
                     alt="Site icon image"
                   /> */}
                   <img
-                    src={topIcon.toString()}
+                    src={"/top.svg"}
                     class="custom-icon"
                     alt="Site icon image"
                   />

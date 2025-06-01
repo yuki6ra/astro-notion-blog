@@ -16,7 +16,7 @@
     "cache:purge": "nx reset && rm -f tmp/*",
     "_fetch-notion-blocks": "node scripts/retrieve-block-children.cjs",
     "wrangler:dev": "npm run build && npx wrangler pages dev",
-    "deploy": "npm run build && npx wrangler pages deploy"
+    "deploy": "npm run build && npx wrangler pages deploy dist"
   },
   "dependencies": {
     "@astrojs/react": "^4.1.2",
