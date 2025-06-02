@@ -5,7 +5,7 @@
   "kv_namespaces": [
     {
       "binding": "powwarm_upvote",
-      "id": "ca1df5bbf727450eb9f4e2e3aadecd1e"
-    }
-  ]
+      "id": "ca1df5bbf727450eb9f4e2e3aadecd1e",
+    },
+  ],
 }
