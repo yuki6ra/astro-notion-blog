@@ -341,7 +341,7 @@ export async function incrementLikes(post: Post): Promise<Post | null> {
       },
     },
   }
-  const result: responses.PageObject　= (await client.pages.update(
+  const result: responses.PageObject = (await client.pages.update(
     params as any // eslint-disable-line @typescript-eslint/no-explicit-any
   )) as responses.UpdatePageResponse
 
