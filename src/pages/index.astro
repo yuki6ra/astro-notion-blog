@@ -5,6 +5,7 @@ import {
   // getRankedPosts,
   // getAllTags,
   getNumberOfPages,
+getAllTags,
 } from '../lib/notion/client.ts'
 import Layout from '../layouts/Layout.astro'
 import NoContents from '../components/NoContents.astro'
@@ -16,20 +17,34 @@ import PostExcerpt from '../components/PostExcerpt.astro'
 import ReadMoreLink from '../components/ReadMoreLink.astro'
 import Pagination from '../components/Pagination.astro'
 // import BlogPostsLink from '../components/BlogPostsLink.astro'
-// import BlogTagsLink from '../components/BlogTagsLink.astro'
+import BlogTagsLink from '../components/BlogTagsLink.astro'
 import PostDates from '../components/PostDates.astro'
 import styles from '../styles/blog.module.css'
+import SearchButton from '../components/SearchButton.astro'
+import { getDatabase } from '../lib/notion/client.ts'
 
-const [posts, numberOfPages] = await Promise.all([
+const [posts, tags, numberOfPages] = await Promise.all([
   getPosts(NUMBER_OF_POSTS_PER_PAGE),
   // getRankedPosts(),
-  // getAllTags(),
+  getAllTags(),
   getNumberOfPages(),
 ])
+
+const database = await getDatabase()
 ---
 
 <Layout title="" description="" path="/" ogImage="">
   <div slot="main" class={styles.main}>
+    <div class="blog-header">
+      <div class="description">
+        {database.Description}
+        <SearchButton />
+      </div>
+    </div>
+    <div>
+      <BlogTagsLink heading="Categories" tags={tags} />
+    </div>
+
     {
       posts.length === 0 ? (
         <NoContents contents={posts} />
@@ -62,6 +77,15 @@ const [posts, numberOfPages] = await Promise.all([
 </Layout>
 
 <style>
+  .blog-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .description {
+    padding: 0.3rem 0 0.6rem;
+    font-size: 0.95rem;
+  }
   footer {
     margin-top: 2rem;
   }

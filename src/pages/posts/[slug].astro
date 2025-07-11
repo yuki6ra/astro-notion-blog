@@ -28,6 +28,7 @@ import BlogPostHeadline from '../../components/BlogPostHeadline.astro'
 import styles from '../../styles/blog.module.css'
 import PostDates from '../../components/PostDates.astro'
 import Upvote from '../../components/Upvote.astro'
+import type { Block } from '../../lib/interfaces.ts'
 
 export async function getStaticPaths() {
   const posts = await getAllPosts()
@@ -102,6 +103,11 @@ let ogImage = ''
 if (post.FeaturedImage?.Url) {
   ogImage = new URL(filePath(new URL(post.FeaturedImage.Url)), Astro.site).toString()
 }
+// 見出しがない場合は表示しない
+const headings = blocks.filter((b: Block) =>
+    ['heading_1', 'heading_2', 'heading_3'].includes(b.Type)
+  )
+const showTableOfContents = headings.length > 0;
 ---
 
 <Layout
@@ -112,28 +118,28 @@ if (post.FeaturedImage?.Url) {
 >
   <div slot="main" class={styles.main}>
     <PostFeaturedImage post={post} />
-    <div class={styles.post}>
+    <div style="padding: 0 20px 40px">
       <PostTitle post={post} enableLink={false} />
       <PostDates post={post} />
       <PostTags post={post} enableLink={true} />
-      <BlogPostHeadline heading="目次" blocks={blocks} isAside={false} />
-      <br />
-      <PostBody blocks={blocks} />
-      <Upvote slug={slug} />
-
+    </div>
+    <div class={styles.post}>  
+      <div class={`${showTableOfContents ? 'post-wrapper' : ''}`}>
+        {showTableOfContents ? <BlogPostHeadline heading="目次" blocks={blocks} isAside={false} /> : null }
+        <div>
+          <PostBody blocks={blocks} />
+        </div>
+      </div>
+      
       <footer>
+        <Upvote slug={slug} />
         <PostRelativeLink prevPost={prevPost} nextPost={nextPost} />
       </footer>
     </div>
-
     <footer style="padding: 0;" />
   </div>
 
-  <div slot="right-aside" class="right-aside">
-    <BlogPostHeadline heading="目次" blocks={blocks} isAside={true} />
-  </div>
-
-  <div slot="aside" class="aside">
+  <!-- <div slot="aside" class="aside">
     <BlogPostsLink
       heading="Posts in the same category"
       posts={postsHavingSameTag.filter(
@@ -143,5 +149,14 @@ if (post.FeaturedImage?.Url) {
     <BlogPostsLink heading="Recommended" posts={rankedPosts} />
     <BlogPostsLink heading="Latest posts" posts={recentPosts} />
     <BlogTagsLink heading="Categories" tags={tags} />
-  </div>
+  </div> -->
 </Layout>
+
+<style>
+  .post-wrapper {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    /* grid-template-rows: 1fr; */
+    gap: 30px;
+  }
+</style>

@@ -6,8 +6,9 @@ export interface Props {
   heading: string
   blocks: Block[]
   isAside: boolean
+  class?: string
 }
-const { blocks, isAside } = Astro.props
+const { blocks, isAside, class: customStyle } = Astro.props
 
 // Notion側にTableOfContentsが存在しない場合でも作れるように仮想のアイテムを作成
 const dummyBlock: Block = {
@@ -22,17 +23,13 @@ const dummyBlock: Block = {
 const headings = blocks.filter((b: Block) =>
     ['heading_1', 'heading_2', 'heading_3'].includes(b.Type)
   )
-
-// 見出しがない場合は表示しない
-const showTableOfContents = headings.length > 0;
 ---
 
-{showTableOfContents && (
-  <div class={`post-headline ${isAside ? 'aside' : 'main'}`}>
+  <div class={`post-headline ${isAside ? 'aside' : 'main'} ${customStyle}`}>
     <strong>目次</strong>
     <TableOfContents block={dummyBlock} headings={headings}/>
   </div>
-)}
+
 
 <style>
   .post-headline {
@@ -40,14 +37,26 @@ const showTableOfContents = headings.length > 0;
     border-radius: 0.5rem;
     padding: 1rem 1.5rem;
     z-index: 10;
-    width: 100%;
+    /* width: 100%; */
+    height: fit-content;
+    max-height: 80vh;
+    overflow: scroll;
+
+    /* order: 1;
+    width: 300px;
+    padding: 20px 20px;
+    background-color: #f4f4f4; */
+    top: 68px;
+    position: sticky;
+    transition-duration: .3s;
+    z-index: 1;
   }
 
-  @media (max-width: 1114px) {
+  @media (max-width: 700px) {
     /* モバイル表示では、サイドバー表示の目次を非表示 */
-    .post-headline.aside {
+    /* .post-headline.aside {
       display: none;
-    }
+    } */
     /* メインコンテンツ用スタイル */
     .post-headline.main {
       display: block;
@@ -56,11 +65,11 @@ const showTableOfContents = headings.length > 0;
     }
   }
 
-  @media (min-width: 1115px) {
+  @media (min-width: 700px) {
     /* デスクトップ表示では、メインコンテンツ内の目次を非表示 */
-    .post-headline.main {
+    /* .post-headline.main {
       display: none;
-    }
+    } */
     /* サイドバー用スタイル */
     .post-headline.aside {
       display: block;
