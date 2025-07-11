@@ -55,7 +55,6 @@ import type {
 } from '../interfaces'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { Client, APIResponseError } from '@notionhq/client'
-import type Upvote from '../../components/Upvote.astro'
 
 const client = new Client({
   auth: NOTION_API_SECRET,
@@ -334,8 +333,6 @@ export async function getAllBlocksByBlockId(blockId: string): Promise<Block[]> {
 
 // upvoteを更新するメソッド
 export async function incrementLikes(post: Post): Promise<Post | null> {
-  let result: responses.PageObject
-
   const params: requestParams.UpdatePage = {
     page_id: post.PageId,
     properties: {
@@ -344,8 +341,7 @@ export async function incrementLikes(post: Post): Promise<Post | null> {
       },
     },
   }
-
-  result = (await client.pages.update(
+  const result: responses.PageObject　= (await client.pages.update(
     params as any // eslint-disable-line @typescript-eslint/no-explicit-any
   )) as responses.UpdatePageResponse
 

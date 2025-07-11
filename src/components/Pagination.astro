@@ -7,7 +7,7 @@ export interface Props {
   tag: string
 }
 
-const { currentPage, numberOfPages, tag = '' } = Astro.props
+const { currentPage, numberOfPages } = Astro.props
 
 // ページが複数ある場合のみページネーションを表示
 const showPagination = numberOfPages > 1

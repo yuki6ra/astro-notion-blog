@@ -1,13 +1,9 @@
 ---
 import type * as interfaces from '../../lib/interfaces.ts'
 import {
-  getPosts,
   getAllPosts,
-  getRankedPosts,
   getPostBySlug,
-  getPostsByTag,
   getBlock,
-  getAllTags,
   getAllBlocksByBlockId,
   downloadFile,
 } from '../../lib/notion/client.ts'
@@ -22,8 +18,6 @@ import PostFeaturedImage from '../../components/PostFeaturedImage.astro'
 import PostTitle from '../../components/PostTitle.astro'
 import PostBody from '../../components/PostBody.astro'
 import PostRelativeLink from '../../components/PostRelativeLink.astro'
-import BlogPostsLink from '../../components/BlogPostsLink.astro'
-import BlogTagsLink from '../../components/BlogTagsLink.astro'
 import BlogPostHeadline from '../../components/BlogPostHeadline.astro'
 import styles from '../../styles/blog.module.css'
 import PostDates from '../../components/PostDates.astro'
@@ -42,14 +36,10 @@ if (!post) {
   throw new Error(`Post not found. slug: ${slug}`)
 }
 
-const [blocks, allPosts, rankedPosts, recentPosts, tags, postsHavingSameTag] =
+const [blocks, allPosts] =
   await Promise.all([
     getAllBlocksByBlockId(post.PageId),
     getAllPosts(),
-    getRankedPosts(),
-    getPosts(5),
-    getAllTags(),
-    getPostsByTag(post.Tags[0]?.name, 6),
   ])
 
 const fileAtacchedBlocks = extractTargetBlocks('image', blocks)
@@ -118,7 +108,7 @@ const showTableOfContents = headings.length > 0;
 >
   <div slot="main" class={styles.main}>
     <PostFeaturedImage post={post} />
-    <div style="padding: 0 20px 40px">
+    <div class="post-title">
       <PostTitle post={post} enableLink={false} />
       <PostDates post={post} />
       <PostTags post={post} enableLink={true} />
@@ -156,7 +146,17 @@ const showTableOfContents = headings.length > 0;
   .post-wrapper {
     display: grid;
     grid-template-columns: 25% 75%;
-    /* grid-template-rows: 1fr; */
     gap: 30px;
+  }
+  .post-title {
+    padding: 0 20px 40px
+  }
+  @media (max-width: 768px) {
+    .post-wrapper {
+      display: block;
+    }
+    .post-title {
+      padding: 0 20px 20px
+    }
   }
 </style>
