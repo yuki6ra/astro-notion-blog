@@ -46,11 +46,46 @@ const headings = blocks.filter((b: Block) =>
 
   mediaQuery.addEventListener('change', handleViewportChange);
   handleViewportChange(mediaQuery);
+
+  // 目次アクティブ制御
+  function throttle(fn: () => void, wait: number) {
+    let time = Date.now();
+    return function() {
+      if ((time + wait - Date.now()) < 0) {
+        fn();
+        time = Date.now();
+      }
+    }
+  }
+
+  function setActiveTocLink() {
+    const headings = Array.from(document.querySelectorAll('a[id]'));
+    const tocLinks = Array.from(document.querySelectorAll('.table-of-contents > a[data-id]'));
+    let activeId = '';
+    const scrollY = window.scrollY;
+    for (let i = headings.length - 1; i >= 0; i--) {
+      const rect = headings[i].getBoundingClientRect();
+      if (rect.top + window.scrollY <= scrollY + 80) { // 80pxはヘッダー分のオフセット
+        activeId = headings[i].id;
+        break;
+      }
+    }
+    tocLinks.forEach(link => {
+      if (link.getAttribute('data-id') === activeId) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', throttle(setActiveTocLink, 100));
+  window.addEventListener('DOMContentLoaded', setActiveTocLink);
 </script>
 
 <style>
   .post-headline {
-    background-color: #f6f6f6;
+    background-color: #FBFBFB;
     border-radius: 0.5rem;
     padding: 1rem 1.5rem;
     z-index: 10;

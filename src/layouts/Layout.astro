@@ -290,7 +290,7 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
 
     --radius: 4px;
 
-    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    --font-sans: 'UDEVGothic35NFLG', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
       'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
       'Helvetica Neue', sans-serif;
     --font-mono: SFMono-Regular, Menlo, Consolas, 'PT Mono', 'Liberation Mono',
@@ -301,6 +301,35 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
     box-sizing: border-box;
     word-break: break-word;
     scrollbar-gutter: stable;
+  }
+
+  @font-face {
+    font-family: 'UDEVGothic35NFLG';
+    src: url('/fonts/UDEVGothic35NFLG-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'UDEVGothic35NFLG';
+    src: url('/fonts/UDEVGothic35NFLG-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'UDEVGothic35NFLG';
+    src: url('/fonts/UDEVGothic35NFLG-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'UDEVGothic35NFLG';
+    src: url('/fonts/UDEVGothic35NFLG-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
   }
 
   html,
@@ -315,7 +344,7 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
     min-height: 100vh;
     background: var(--bg);
     color: var(--fg);
-    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    font-family: 'UDEVGothic35NFLG', -apple-system, BlinkMacSystemFont, 'Segoe UI',
       Helvetica, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN',
       'Hiragino Sans GB', メイリオ, Meiryo, 'Apple Color Emoji', Arial,
       sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';

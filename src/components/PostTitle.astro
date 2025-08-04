@@ -58,8 +58,8 @@ const title = post.Title
 <style>
   .post-title {
     margin: 0;
-    padding: 0.2rem 0;
-    font-size: 2rem;
+    padding: 0.4rem 0;
+    font-size: 2.5rem;
     font-weight: 600;
     color: var(--fg);
   }
@@ -72,8 +72,11 @@ const title = post.Title
     display: inline-block;
     margin-right: 0.2em;
   }
-  .post-title span {
+  .post-title a span {
     font-size: 1.3rem;
+  }
+  .post-title span {
+    font-size: 2rem;
   }
   .post-title img {
     width: 1.3em;
@@ -86,7 +89,7 @@ const title = post.Title
   }
   @media (max-width: 640px) {
     .post-title {
-      font-size: 1.4rem;
+      font-size: 2rem;
     }
     .post-title a {
       font-size: 1.2rem;
