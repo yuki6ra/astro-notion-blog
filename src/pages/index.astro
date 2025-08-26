@@ -20,7 +20,7 @@ import Pagination from '../components/Pagination.astro'
 import BlogTagsLink from '../components/BlogTagsLink.astro'
 import PostDates from '../components/PostDates.astro'
 import styles from '../styles/blog.module.css'
-import SearchButton from '../components/SearchButton.astro'
+// import SearchButton from '../components/SearchButton.astro'
 import { getDatabase } from '../lib/notion/client.ts'
 
 const [posts, tags, numberOfPages] = await Promise.all([
@@ -38,13 +38,14 @@ const database = await getDatabase()
     <div class="blog-header">
       <div class="description">
         {database.Description}
-        <SearchButton />
+        <!-- <SearchButton /> -->
       </div>
     </div>
     <div>
       <BlogTagsLink heading="Categories" tags={tags} />
     </div>
 
+    <h4 class="blog-header-style">Blogs</h4>
     {
       posts.length === 0 ? (
         <NoContents contents={posts} />
@@ -52,13 +53,9 @@ const database = await getDatabase()
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {posts.map((post) => (
             <ReadMoreLink post={post}>
-              <PostDates post={post} />
-              {/* <PostDates post={post} /> */}
               <PostTitle post={post} enableLink={true} />
-              {/* <PostFeaturedImage post={post} /> */}
               <PostExcerpt post={post} />
-              <PostTags post={post} enableLink={true} />
-              {/* <ReadMoreLink post={post} /> */}
+              <PostDates post={post} />
             </ReadMoreLink>
           ))}
         </div>
@@ -81,6 +78,11 @@ const database = await getDatabase()
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .blog-header-style {
+    margin: 0;
+    padding: 0.5rem;
+    color: #777;
   }
   .description {
     padding: 0.3rem 0 0.6rem;

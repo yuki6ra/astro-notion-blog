@@ -6,6 +6,7 @@ import '../styles/syntax-coloring.css'
 import GoogleAnalytics from '../components/GoogleAnalytics.astro'
 import SearchModal from '../components/SearchModal.astro'
 import { Icon } from 'astro-icon/components';
+import SearchButton from '../components/SearchButton.astro'
 
 export interface Props {
   title: string
@@ -47,16 +48,16 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
     <meta name="robots" content="max-image-preview:large" />
     <meta charset="UTF-8" />
     <meta name="generator" content={Astro.generator} />
-    <title>{siteTitle}</title>
+    <title>{siteTitle} blog</title>
     <meta name="description" content={siteDescription} />
     <link rel="canonical" href={siteURL} />
     <link rel="icon" href={getStaticFilePath('/favicon.svg')} />
     <meta property="og:url" content={siteURL} />
-    <meta property="og:title" content={siteTitle} />
+    <meta property="og:title" content={`${siteTitle} blog`} />
     <meta property="og:description" content={siteDescription} />
     <meta property="og:site_name" content={database.Title} />
     <meta property="og:image" content={ogImage || "/default-og-image.png"} />
-    <meta name="twitter:title" content={siteTitle} />
+    <meta name="twitter:title" content={`${siteTitle} blog`} />
     <meta name="twitter:description" content={siteDescription} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage || "/default-og-image.png"} />
@@ -87,9 +88,12 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
             <a href="/">HOME</a>
             <a title="準備中">ABOUT</a>
           </nav>
-          <button class="theme-toggle" title="準備中">
-            <Icon name="mingcute:sun-line" />
-          </button>
+          <div class="theme-toggle">
+            <SearchButton />
+            <button style="background-color: transparent; border: none; color: #9d9d9d; font-size: 1.3rem;" title="準備中">
+              <Icon name="mingcute:sun-line" />
+            </button>
+          </div>
         </div>
       </header>
       <!-- <aside>
@@ -243,12 +247,7 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
   }
 
   .theme-toggle {
-    background-color: transparent;
-    border: none;
     border-radius: var(--radius);
-    color: #777;
-    font-size: 1.3rem;
-    font-weight: bold;
     text-align: center;
     display: grid;
     justify-self: end;
