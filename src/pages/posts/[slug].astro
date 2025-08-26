@@ -115,10 +115,10 @@ const showTableOfContents = headings.length > 0;
     </div>
     <div class={styles.post}>  
       <div class={`${showTableOfContents ? 'post-wrapper' : ''}`}>
-        {showTableOfContents ? <BlogPostHeadline heading="目次" blocks={blocks} isAside={false} /> : null }
         <div>
           <PostBody blocks={blocks} />
         </div>
+        {showTableOfContents ? <BlogPostHeadline heading="目次" blocks={blocks} isAside={false} /> : null }
       </div>
       
       <footer>
@@ -145,8 +145,8 @@ const showTableOfContents = headings.length > 0;
 <style>
   .post-wrapper {
     display: grid;
-    grid-template-columns: 27% 73%;
-    gap: 38px;
+    grid-template-columns: 72% 28%;
+    gap: 30px;
   }
   .post-title {
     padding: 0 20px 40px
