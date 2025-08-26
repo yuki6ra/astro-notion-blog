@@ -1,5 +1,5 @@
 ---
-import { Block } from '../lib/interfaces.ts'
+import type { Block } from '../lib/interfaces.ts'
 import NotionBlocks from './NotionBlocks.astro'
 
 export interface Props {
@@ -16,5 +16,10 @@ const { blocks } = Astro.props
 <style>
   .post-body {
     padding: 0.5rem 0;
+  }
+  @media (max-width: 700px) {
+    .post-body {
+      padding: 1.5rem 0;
+    }
   }
 </style>

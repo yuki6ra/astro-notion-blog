@@ -20,16 +20,17 @@ const { title = '', description = '', path = '/', ogImage = '' } = Astro.props
 const database = await getDatabase()
 
 const siteTitle = title ? `${title} - ${database.Title}` : database.Title
+const siteIcon = database.Icon && 'Emoji' in database.Icon ? database.Icon.Emoji : undefined
 const siteDescription = description ? description : database.Description
 const siteURL = new URL(getNavLink(path), Astro.site).toString()
-// const siteOGImage = new URL(
-//   getStaticFilePath('/default-og-image.png'),
-//   Astro.site
-// )
-// const topIcon = new URL(
-//   getStaticFilePath('/top.svg'),
-//   Astro.site
-// )
+const siteOGImage = new URL(
+  getStaticFilePath('/default-og-image.png'),
+  Astro.site
+)
+const topIcon = new URL(
+  getStaticFilePath('/top.svg'),
+  Astro.site
+)
 
 // let customIconURL: string | undefined = undefined;
 // if (database.Icon && database.Icon.Type === 'file') {
@@ -51,7 +52,8 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
     <title>{siteTitle} blog</title>
     <meta name="description" content={siteDescription} />
     <link rel="canonical" href={siteURL} />
-    <link rel="icon" href={getStaticFilePath('/favicon.svg')} />
+    <!-- <link rel="icon" href={getStaticFilePath('/favicon.svg')} /> -->
+    <link rel="icon" href=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%%22 y=%2250%%22 style=%22dominant-baseline:central;text-anchor:middle;font-size:90px;%22>{{${siteIcon}}}</text></svg>` />
     <meta property="og:url" content={siteURL} />
     <meta property="og:title" content={`${siteTitle} blog`} />
     <meta property="og:description" content={siteDescription} />
@@ -75,24 +77,27 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
         <div>
           <h3>
             <a href={getNavLink('/')}>
-              <img
+              <!-- <img
                 src={"/top.svg"}
                 class="custom-icon"
                 alt="Site icon image"
                 sizes="28px"
-              />
+              /> -->
+              <span>{siteIcon}</span>
               {database.Title}
             </a>
           </h3>
-          <nav>
+          <!-- <nav>
             <a href="/">HOME</a>
             <a title="準備中">ABOUT</a>
-          </nav>
+          </nav> -->
           <div class="theme-toggle">
             <SearchButton />
-            <button style="background-color: transparent; border: none; color: #9d9d9d; font-size: 1.3rem;" title="準備中">
+            <div />
+            <!-- todo: リファクタ後、ダークモード実装
+            <button class="theme-button" title="準備中">
               <Icon name="mingcute:sun-line" />
-            </button>
+            </button> -->
           </div>
         </div>
       </header>
@@ -189,7 +194,8 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
   }
   @media (max-width: 640px) {
     div.content {
-      padding: 0 18px;
+      margin-top: 1rem;
+      padding: 0 20px;
     }
   }
 
@@ -205,7 +211,7 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
   }
   .container header div {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     align-items: center;
   }
   .container header div h3 {
@@ -224,10 +230,6 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
   .container header div h3 a img {
     display: inline-block;
     /* font-size: 1.1em; */
-  }
-  .container header div h3 a span {
-    margin-right: 0.3em;
-    margin-left: -0.1rem;
   }
   .container header div h3 a img {
     width: 1.2em;
@@ -251,6 +253,19 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
     text-align: center;
     display: grid;
     justify-self: end;
+  }
+
+  .theme-button {
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius);
+    color: #777;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  .theme-button:hover {
+    cursor: pointer;
+    background-color: #ddd;
   }
 
   main footer {
