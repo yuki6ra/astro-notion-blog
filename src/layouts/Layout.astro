@@ -288,6 +288,35 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
 </style>
 
 <style is:global>
+  @font-face {
+    font-family: 'Guguru Sans Code Console 35NF';
+    src: url('/fonts/GuguruSansCodeConsole35NF-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Guguru Sans Code Console 35NF';
+    src: url('/fonts/GuguruSansCodeConsole35NF-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Guguru Sans Code Console 35NF';
+    src: url('/fonts/GuguruSansCodeConsole35NF-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Guguru Sans Code Console 35NF';
+    src: url('/fonts/GuguruSansCodeConsole35NF-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic; 
+    font-display: swap;
+  }
+
   :root {
     --gap-quarter: 0.25rem;
     --gap-half: 0.5rem;
@@ -329,7 +358,7 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
     min-height: 100vh;
     background: var(--bg);
     color: var(--fg);
-    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    font-family: 'Guguru Sans Code Console 35NF', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI',
       Helvetica, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN',
       'Hiragino Sans GB', メイリオ, Meiryo, 'Apple Color Emoji', Arial,
       sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
