@@ -6,7 +6,7 @@ import {
 import Layout from '../../../layouts/Layout.astro'
 import NoContents from '../../../components/NoContents.astro'
 import PostDates from '../../../components/PostDates.astro'
-import PostTags from '../../../components/PostTags.astro'
+// import PostTags from '../../../components/PostTags.astro'
 import PostTitle from '../../../components/PostTitle.astro'
 import PostExcerpt from '../../../components/PostExcerpt.astro'
 import ReadMoreLink from '../../../components/ReadMoreLink.astro'
@@ -37,23 +37,17 @@ const [posts, numberOfPages] = await Promise.all([
 
 <Layout title={`Posts ${page}/${numberOfPages}`} path={`/posts/page/${page}`} description="Blog posts page" ogImage="">
   <div slot="main" class={styles.main}>
-    <!-- <header>
-      <div class="page-container">{page}/{numberOfPages}</div>
-    </header> -->
-
+    <h4 class="page-container">{page}/{numberOfPages}</h4>
     {
       posts.length === 0 ? (
         <NoContents contents={posts} />
       ) : (
         posts.map((post) => (
-          <ReadMoreLink post={post}>
-            <PostDates post={post} />
-            <PostTitle post={post} enableLink={true} />
-            {/* <PostFeaturedImage post={post} /> */}
-            <PostExcerpt post={post} />
-            <PostTags post={post} enableLink={true} />
-            {/* <ReadMoreLink post={post} /> */}
-          </ReadMoreLink>
+            <ReadMoreLink post={post}>
+              <PostTitle post={post} enableLink={true} />
+              <PostExcerpt post={post} />
+              <PostDates post={post} />
+            </ReadMoreLink>
         ))
       )
     }
@@ -74,11 +68,18 @@ const [posts, numberOfPages] = await Promise.all([
 </Layout>
 
 <style>
+  .description {
+    padding: 0.3rem 0 0.6rem;
+    font-size: 0.95rem;
+  }
+  footer {
+    margin-top: 2rem;
+  }
+
   .page-container {
     margin: 0;
-    line-height: 1.3;
-    font-size: 1.2rem;
-    font-weight: normal;
+    padding: 0.5rem;
+    color: #777;
   }
   footer {
     margin-top: 2rem;
