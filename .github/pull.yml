@@ -2,4 +2,6 @@ version: '1'
 rules:
   - base: main
     upstream: otoyo:main
-    mergeMethod: hardreset
+    mergeMethod: merge
+label: ":arrow_heading_down: pull"
+conflictLabel: "merge-conflict"
