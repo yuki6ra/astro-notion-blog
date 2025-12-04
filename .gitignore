@@ -28,3 +28,9 @@ tmp/
 
 public/notion/*
 !public/notion/.gitkeep
+
+# Cloudflare Wrangler
+.wrangler/*
+.dev.vars
+
+todo.md

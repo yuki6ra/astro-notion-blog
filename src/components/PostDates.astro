@@ -1,0 +1,66 @@
+---
+import { Icon } from "astro-icon/components";
+import type { Post } from '../lib/interfaces.ts'
+import { getDateStr } from '../lib/blog-helpers.ts'
+
+export interface Props {
+  post: Post
+}
+
+const { post } = Astro.props
+
+/**
+ * 2つの日付文字列の年月日部分だけを比較して、同じ日かどうかを判断します
+ */
+export function isSameDay(date1: string, date2: string): boolean {
+  if (!date1 || !date2) return false;
+
+  try {
+    // 日付文字列を解析して新しいDateオブジェクトを作成
+    const d1 = new Date(date1);
+    const d2 = new Date(date2);
+
+    // ローカル時間（JST）の年月日で比較
+    return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate()
+    );
+  } catch (error) {
+    console.error("日付比較でエラー:", error);
+    return false;
+  }
+}
+---
+
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.2rem', fontSize: '0.8rem', paddingTop: "0.3rem" }}>
+  {
+    post.Date ?
+      <>
+        {getDateStr(post.Date)}
+      </>
+      : ''
+  }
+  {
+    post.LastUpdated && !isSameDay(post.LastUpdated, post.Date) ? (
+      <>
+        |
+        <span style={{ display: 'flex', alignItems: 'center' }}>
+          <Icon name="mdi:autorenew" class="icon" /> {getDateStr(post.LastUpdated)}
+        </span>
+      </>
+    )
+      : ''
+    }
+</div>
+
+<style>
+  .post-date {
+    /* padding: 0 0 0.3rem; */
+    font-size: 0.8rem;
+  }
+  .icon {
+    color: var(--fg);
+    font-weight: 700;
+  }
+</style>

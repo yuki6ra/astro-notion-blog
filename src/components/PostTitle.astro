@@ -1,5 +1,5 @@
 ---
-import { Post } from '../lib/interfaces.ts'
+import type { Post } from '../lib/interfaces.ts'
 import { getPostLink } from '../lib/blog-helpers.ts'
 
 export interface Props {
@@ -9,21 +9,22 @@ export interface Props {
 
 const { post, enableLink = true } = Astro.props
 
-let title = post.Title
+const title = post.Title
 ---
 
-<h2 class="post-title">
+<p class="post-title">
   {
     enableLink ? (
+      // indexページ
       <a href={getPostLink(post.Slug)}>
         {post.Icon && post.Icon.Type === 'emoji' ? (
           <>
-            <span>{post.Icon.Emoji}</span>
+            <span>{(post.Icon as { Emoji: string }).Emoji}</span>
             {title}
           </>
         ) : post.Icon && post.Icon.Type === 'external' ? (
           <>
-            <img src={post.Icon.Url} alt="Post title icon" />
+            <img src={(post.Icon as {Url: string}).Url} alt="Post title icon" />
             {title}
           </>
         ) : (
@@ -34,12 +35,16 @@ let title = post.Title
       <>
         {post.Icon && post.Icon.Type === 'emoji' ? (
           <>
-            <span>{post.Icon.Emoji}</span>
+            <span>{(post.Icon as { Emoji: string }).Emoji}</span>
             {title}
           </>
         ) : post.Icon && post.Icon.Type === 'external' ? (
           <>
-            <img src={post.Icon.Url} alt="Post title icon" />
+            <img
+              src={(post.Icon as {Url: string}).Url}
+              alt="Post title icon"
+              style={{ display: 'inline-block' }}
+            />
             {title}
           </>
         ) : (
@@ -48,18 +53,17 @@ let title = post.Title
       </>
     )
   }
-</h2>
+</p>
 
 <style>
   .post-title {
     margin: 0;
-    padding: 0.2rem 0;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--fg);
   }
   .post-title a {
-    font-size: 1.6rem;
+    font-size: 1.2rem;
     color: inherit;
   }
   .post-title span,
@@ -68,19 +72,26 @@ let title = post.Title
     margin-right: 0.2em;
   }
   .post-title span {
-    font-size: 1.2em;
+    font-size: 1.3rem;
   }
   .post-title img {
     width: 1.3em;
     height: 1.3em;
     vertical-align: sub;
   }
+  .slug-title > :not(img) {
+    font-size: 2.3rem !important;
+    font-weight: 700 !important;
+  }
   @media (max-width: 640px) {
-    .post-title {
-      font-size: 1.4rem;
+    .post-title { /* 記事タイトル */
+      font-size: 1.3rem;
     }
-    .post-title a {
+    .post-title a { /* 一覧タイトル */
       font-size: 1.2rem;
+    }
+    .slug-title > :not(img) {
+      font-size: 1.8rem !important;
     }
   }
 </style>

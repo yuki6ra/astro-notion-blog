@@ -1,5 +1,5 @@
 ---
-import { Post } from '../lib/interfaces.ts'
+import type { Post } from '../lib/interfaces.ts'
 import { filePath } from '../lib/blog-helpers'
 
 export interface Props {
@@ -9,7 +9,7 @@ export interface Props {
 const { post } = Astro.props
 
 let image = ''
-if (post.FeaturedImage && post.FeaturedImage.Url) {
+if (post.FeaturedImage?.Url) {
   if (import.meta.env.DEV) {
     image = post.FeaturedImage.Url
   } else {
@@ -21,18 +21,22 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
 {
   image && (
     <div class="post-featured-image">
-      <img src={image} alt="Featured image of the post" />
+      <img src={image} alt="Featured image of the post" width="100%" height="auto" />
     </div>
   )
 }
 
 <style>
   .post-featured-image {
-    padding: 0.6rem 0 0.2rem;
+    padding: 0 0 1.5rem;
   }
   .post-featured-image img {
     display: block;
     max-width: 100%;
-    max-height: 20rem;
+    max-height: auto;
+    margin: 0 auto;
+    border-radius: 0.5rem;
+    border: 0.7px solid var(--accents-1);
+    object-fit: cover;
   }
 </style>

@@ -2,9 +2,9 @@
   padding: 0 0 20px;
 }
 .main footer {
-  border-top: 1px dashed #888;
+  border-bottom: 1px dashed #888;
   margin: 0 auto;
-  padding: 40px 0 0;
+  padding: 0 0 40px;
 }
 @media (max-width: 640px) {
   .main footer {
@@ -13,7 +13,7 @@
 }
 
 .post {
-  margin: 0 auto 40px;
+  margin: 0 auto 30px;
 }
 .post footer {
   margin-top: 0.5rem;

@@ -18,21 +18,20 @@ const { heading, tags } = Astro.props
     tags.length === 0 ? (
       <NoContents contents={tags} />
     ) : (
-      <ul>
+      <div>
         {tags.map((tag: SelectProperty) => (
-          <li>
-            <a href={getTagLink(tag.name)} class={`tag ${tag.color}`}>
-              {tag.name}
-            </a>
-          </li>
+          <a href={getTagLink(tag.name)} class={`tag`}>
+            {tag.name}
+          </a>
         ))}
-      </ul>
+      </div>
     )
   }
 </div>
 
 <style>
   .blog-tags-link {
+    margin: 30px 0;
   }
   .blog-tags-link h2 {
     margin: 0;
@@ -40,25 +39,29 @@ const { heading, tags } = Astro.props
     color: #777;
     font-size: 0.95rem;
   }
-  .blog-tags-link ul {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 0.3rem;
-    margin-block-end: 1rem;
+  .blog-tags-link div{
+    padding: 8px 0;
   }
-  .blog-tags-link ul li {
-    position: relative;
-    padding: 0.4rem;
-    line-height: 1.2rem;
-    font-size: 0.9rem;
-    gap: 6px;
-  }
-  .blog-tags-link ul li a {
+  .blog-tags-link a {
+    margin-right: 0.6rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.8rem;
+    display: inline-block;
+
     min-width: 0;
     border-radius: 3px;
-    padding: 2px 6px;
+    border: 1px solid #8f8f8f;
+    padding: 4px 8px;
     line-height: 1.2;
     color: rgb(50, 48, 44);
-    background: rgba(227, 226, 224, 0.5);
+  }
+  .blog-tags-link a:hover {
+    background-color: #f0f0f0;
+    text-decoration: none;
+  }
+  @media (max-width: 768px) {
+    .blog-tags-link {
+    margin: 20px 0;
+  }
   }
 </style>

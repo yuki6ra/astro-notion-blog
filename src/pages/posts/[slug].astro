@@ -1,13 +1,9 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
+import type * as interfaces from '../../lib/interfaces.ts'
 import {
-  getPosts,
   getAllPosts,
-  getRankedPosts,
   getPostBySlug,
-  getPostsByTag,
   getBlock,
-  getAllTags,
   getAllBlocksByBlockId,
   downloadFile,
 } from '../../lib/notion/client.ts'
@@ -17,14 +13,16 @@ import {
   extractTargetBlocks,
 } from '../../lib/blog-helpers.ts'
 import Layout from '../../layouts/Layout.astro'
-import PostDate from '../../components/PostDate.astro'
 import PostTags from '../../components/PostTags.astro'
+import PostFeaturedImage from '../../components/PostFeaturedImage.astro'
 import PostTitle from '../../components/PostTitle.astro'
 import PostBody from '../../components/PostBody.astro'
 import PostRelativeLink from '../../components/PostRelativeLink.astro'
-import BlogPostsLink from '../../components/BlogPostsLink.astro'
-import BlogTagsLink from '../../components/BlogTagsLink.astro'
+import BlogPostHeadline from '../../components/BlogPostHeadline.astro'
 import styles from '../../styles/blog.module.css'
+import PostDates from '../../components/PostDates.astro'
+import Upvote from '../../components/Upvote.astro'
+import type { Block } from '../../lib/interfaces.ts'
 
 export async function getStaticPaths() {
   const posts = await getAllPosts()
@@ -38,14 +36,10 @@ if (!post) {
   throw new Error(`Post not found. slug: ${slug}`)
 }
 
-const [blocks, allPosts, rankedPosts, recentPosts, tags, postsHavingSameTag] =
+const [blocks, allPosts] =
   await Promise.all([
     getAllBlocksByBlockId(post.PageId),
     getAllPosts(),
-    getRankedPosts(),
-    getPosts(5),
-    getAllTags(),
-    getPostsByTag(post.Tags[0]?.name, 6),
   ])
 
 const fileAtacchedBlocks = extractTargetBlocks('image', blocks)
@@ -55,14 +49,18 @@ const fileAtacchedBlocks = extractTargetBlocks('image', blocks)
       return false
     }
     const imageOrFile = block.Image || block.File
-    return imageOrFile && imageOrFile.File && imageOrFile.File.Url
+    return imageOrFile?.File?.Url
   })
 
 // Download files
 await Promise.all(
   fileAtacchedBlocks
     .map(async (block) => {
-      const expiryTime = (block.Image || block.File).File.ExpiryTime
+      const imageOrFile = block.Image || block.File
+      if (!imageOrFile || !imageOrFile.File || !imageOrFile.File.ExpiryTime) {
+        return Promise.resolve(block)
+      }
+      const expiryTime = imageOrFile.File.ExpiryTime
       if (Date.parse(expiryTime) > Date.now()) {
         return Promise.resolve(block)
       }
@@ -72,10 +70,14 @@ await Promise.all(
       promise.then((block) => {
         let url!: URL
         try {
-          url = new URL((block.Image || block.File).File.Url)
+          const fileUrl = (block.Image || block.File)?.File?.Url;
+          if (!fileUrl) {
+            throw new Error("File URL is undefined");
+          }
+          url = new URL(fileUrl);
         } catch {
-          console.log('Invalid file URL: ', (block.Image || block.File)?.File?.Url)
-          return Promise.reject()
+          console.log('Invalid file URL: ', (block.Image || block.File)?.File?.Url);
+          return Promise.reject();
         }
         return Promise.resolve(url)
       })
@@ -88,9 +90,14 @@ const prevPost = allPosts[currentPostIndex + 1]
 const nextPost = allPosts[currentPostIndex - 1]
 
 let ogImage = ''
-if (post.FeaturedImage && post.FeaturedImage.Url) {
-  ogImage = new URL(filePath(new URL(post.FeaturedImage.Url)), Astro.site)
+if (post.FeaturedImage?.Url) {
+  ogImage = new URL(filePath(new URL(post.FeaturedImage.Url)), Astro.site).toString()
 }
+// 見出しがない場合は表示しない
+const headings = blocks.filter((b: Block) =>
+    ['heading_1', 'heading_2', 'heading_3'].includes(b.Type)
+  )
+const showTableOfContents = headings.length > 0;
 ---
 
 <Layout
@@ -100,20 +107,33 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
   ogImage={ogImage}
 >
   <div slot="main" class={styles.main}>
-    <div class={styles.post}>
-      <PostDate post={post} />
-      <PostTags post={post} />
+    <PostFeaturedImage post={post} />
+    <div class="post-title">
       <PostTitle post={post} enableLink={false} />
-      <PostBody blocks={blocks} />
-      <PostTags post={post} />
-
+      <PostDates post={post} />
+      <PostTags post={post} enableLink={true} />
+    </div>
+    <div class={styles.post}>  
+      <div class={`${showTableOfContents ? 'post-wrapper' : ''}`}>
+        {showTableOfContents ? 
+          <div class="post-aside">
+            <BlogPostHeadline heading="目次" blocks={blocks} isAside={false} />
+          </div>
+        : null }
+        <div class="post-body">
+          <PostBody blocks={blocks} />
+        </div>
+      </div>
+      
       <footer>
+        <Upvote slug={slug} />
         <PostRelativeLink prevPost={prevPost} nextPost={nextPost} />
       </footer>
     </div>
+    <footer style="padding: 0;" />
   </div>
 
-  <div slot="aside" class="aside">
+  <!-- <div slot="aside" class="aside">
     <BlogPostsLink
       heading="Posts in the same category"
       posts={postsHavingSameTag.filter(
@@ -123,5 +143,30 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
     <BlogPostsLink heading="Recommended" posts={rankedPosts} />
     <BlogPostsLink heading="Latest posts" posts={recentPosts} />
     <BlogTagsLink heading="Categories" tags={tags} />
-  </div>
+  </div> -->
 </Layout>
+
+<style>
+  .post-wrapper {
+    display: grid;
+    grid-template-columns: 72% 28%;
+    gap: 26px;
+  }
+  .post-title {
+    margin-bottom: 50px;
+  }
+  .post-body {
+    order: 1;
+  }
+  .post-aside {
+    order: 2;
+  }
+  @media (max-width: 768px) {
+    .post-wrapper {
+      display: block;
+    }
+    .post-title {
+      margin-bottom: 30px;
+    }
+  }
+</style>
